@@ -2,25 +2,25 @@ import { BigDecimal, ethereum } from "@graphprotocol/graph-ts";
 
 import { Approval, ERC20, Transfer } from "../generated/ERC20/ERC20";
 import {
-  Account,
-  Token,
-  TokenApproval,
-  TokenBalance,
+  erc20_Account,
+  erc20_Token,
+  erc20_TokenApproval,
+  erc20_TokenBalance,
 } from "../generated/schema";
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
-function loadOrCreateAccount(address: string): Account | null {
-  let account = Account.load(address);
+function loadOrCreateAccount(address: string): erc20_Account | null {
+  let account = erc20_Account.load(address);
   if (!account) {
-    account = new Account(address);
+    account = new erc20_Account(address);
     account.save();
   }
   return account;
 }
 
-function loadOrCreateToken(event: ethereum.Event): Token | null {
-  let token = Token.load(event.address.toHex());
+function loadOrCreateToken(event: ethereum.Event): erc20_Token | null {
+  let token = erc20_Token.load(event.address.toHex());
   if (!token) {
     let erc20 = ERC20.bind(event.address);
 
@@ -46,7 +46,7 @@ function loadOrCreateToken(event: ethereum.Event): Token | null {
       return null;
     }
 
-    token = new Token(event.address.toHex());
+    token = new erc20_Token(event.address.toHex());
     token.name = nameResult.value;
     token.symbol = symbolResult.value;
     token.decimals = decimalsResult.value.toI32();
@@ -72,11 +72,11 @@ export function handleApproval(event: Approval): void {
     return;
   }
 
-  let tokenApproval = TokenApproval.load(
+  let tokenApproval = erc20_TokenApproval.load(
     token.id + "-" + ownerAccount.id + "-" + spenderAccount.id
   );
   if (!tokenApproval) {
-    tokenApproval = new TokenApproval(
+    tokenApproval = new erc20_TokenApproval(
       token.id + "-" + ownerAccount.id + "-" + spenderAccount.id
     );
     tokenApproval.token = token.id;
@@ -105,9 +105,9 @@ export function handleTransfer(event: Transfer): void {
   }
 
   if (fromAccount.id != zeroAddress) {
-    let fromTokenBalance = TokenBalance.load(token.id + "-" + fromAccount.id);
+    let fromTokenBalance = erc20_TokenBalance.load(token.id + "-" + fromAccount.id);
     if (!fromTokenBalance) {
-      fromTokenBalance = new TokenBalance(token.id + "-" + fromAccount.id);
+      fromTokenBalance = new erc20_TokenBalance(token.id + "-" + fromAccount.id);
       fromTokenBalance.token = token.id;
       fromTokenBalance.account = fromAccount.id;
       fromTokenBalance.value = BigDecimal.fromString("0");
@@ -116,9 +116,9 @@ export function handleTransfer(event: Transfer): void {
     fromTokenBalance.save();
   }
 
-  let toTokenBalance = TokenBalance.load(token.id + "-" + toAccount.id);
+  let toTokenBalance = erc20_TokenBalance.load(token.id + "-" + toAccount.id);
   if (!toTokenBalance) {
-    toTokenBalance = new TokenBalance(token.id + "-" + toAccount.id);
+    toTokenBalance = new erc20_TokenBalance(token.id + "-" + toAccount.id);
     toTokenBalance.token = token.id;
     toTokenBalance.account = toAccount.id;
     toTokenBalance.value = BigDecimal.fromString("0");

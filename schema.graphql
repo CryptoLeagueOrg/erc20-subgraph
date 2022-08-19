@@ -1,30 +1,30 @@
-type Token @entity {
+type erc20_Token @entity {
   id: ID!
   name: String!
   symbol: String!
   decimals: Int!
-  balances: [TokenBalance!]! @derivedFrom(field: "token")
-  approvals: [TokenApproval!]! @derivedFrom(field: "token")
+  balances: [erc20_TokenBalance!]! @derivedFrom(field: "token")
+  approvals: [erc20_TokenApproval!]! @derivedFrom(field: "token")
 }
 
-type Account @entity {
+type erc20_Account @entity {
   id: ID!
-  balances: [TokenBalance!]! @derivedFrom(field: "account")
-  incomingApprovals: [TokenApproval!]! @derivedFrom(field: "spenderAccount")
-  outgoingApprovals: [TokenApproval!]! @derivedFrom(field: "ownerAccount")
+  balances: [erc20_TokenBalance!]! @derivedFrom(field: "account")
+  incomingApprovals: [erc20_TokenApproval!]! @derivedFrom(field: "spenderAccount")
+  outgoingApprovals: [erc20_TokenApproval!]! @derivedFrom(field: "ownerAccount")
 }
 
-type TokenBalance @entity {
+type erc20_TokenBalance @entity {
   id: ID!
-  token: Token!
-  account: Account!
+  token: erc20_Token!
+  account: erc20_Account!
   value: BigDecimal!
 }
 
-type TokenApproval @entity {
+type erc20_TokenApproval @entity {
   id: ID!
-  token: Token!
-  ownerAccount: Account!
-  spenderAccount: Account!
+  token: erc20_Token!
+  ownerAccount: erc20_Account!
+  spenderAccount: erc20_Account!
   value: BigDecimal!
 }

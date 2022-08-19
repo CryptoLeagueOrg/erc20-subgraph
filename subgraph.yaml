@@ -5,19 +5,19 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: ERC20
-    network: rinkeby
+    network: mainnet
     source:
       abi: ERC20
-      startBlock: 11090000
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Account
-        - Token
-        - TokenApproval
-        - TokenBalance
+        - erc20_Account
+        - erc20_Token
+        - erc20_TokenApproval
+        - erc20_TokenBalance
       abis:
         - name: ERC20
           file: ./abis/ERC20.json
